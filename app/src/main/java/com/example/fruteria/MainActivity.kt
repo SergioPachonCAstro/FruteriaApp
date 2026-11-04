@@ -7,14 +7,14 @@ import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import android.content.Intent
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        // Recuperamos el catálogo al abrir la pantalla principal.
-        Catalogo.cargar(this)
 
         // Relacionamos los elementos del diseño con el código.
         val campoNombre = findViewById<EditText>(R.id.campoNombre)
@@ -23,12 +23,11 @@ class MainActivity : ComponentActivity() {
         val botonAnadir = findViewById<Button>(R.id.botonAnadir)
         val botonCatalogo = findViewById<Button>(R.id.botonCatalogo)
 
-// Abre la pantalla con los productos guardados.
+        // Abre la pantalla con los productos guardados.
         botonCatalogo.setOnClickListener {
             val intent = Intent(this, CatalogoActivity::class.java)
             startActivity(intent)
         }
-
 
         botonAnadir.setOnClickListener {
 
@@ -63,18 +62,19 @@ class MainActivity : ComponentActivity() {
             } else {
 
                 // Comprobamos qué tipo ha seleccionado.
-                val tipo: String
-
-                if (grupoTipo.checkedRadioButtonId == R.id.opcionFruta) {
-                    tipo = "Fruta"
+                val tipo = if (grupoTipo.checkedRadioButtonId == R.id.opcionFruta) {
+                    "Fruta"
                 } else {
-                    tipo = "Verdura"
+                    "Verdura"
                 }
 
-                // Creamos el producto y lo guardamos en la lista.
-                val producto = Producto(nombre, precio, tipo)
-                Catalogo.productos.add(producto)
-                Catalogo.guardar(this)
+                // Guardamos el alimento en la base de datos de Room.
+                val dao = AppDatabase.obtener(this).alimentoDao()
+                lifecycleScope.launch {
+                    val alimento = Alimento(nombre = nombre, precio = precio, tipo = tipo)
+                    dao.insertar(alimento)
+                }
+
                 // Abrimos la ficha y enviamos los datos del producto.
                 val intent = Intent(this, DetalleActivity::class.java)
 

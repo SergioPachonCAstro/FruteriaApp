@@ -7,8 +7,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import java.util.Locale
 
-class ProductoAdapter(private val productos: List<Producto>) :
-    RecyclerView.Adapter<ProductoAdapter.ViewHolder>() {
+class ProductoAdapter(
+    private var productos: List<Alimento>,
+    private val onLongClick: (Alimento) -> Unit
+) : RecyclerView.Adapter<ProductoAdapter.ViewHolder>() {
 
     // Guarda los elementos del diseño de cada fila.
     class ViewHolder(vista: View) : RecyclerView.ViewHolder(vista) {
@@ -46,10 +48,22 @@ class ProductoAdapter(private val productos: List<Producto>) :
         )
 
         holder.tipo.text = producto.tipo
+
+        // Pulsación larga para borrar el producto
+        holder.itemView.setOnLongClickListener {
+            onLongClick(producto)
+            true
+        }
     }
 
     // Devuelve el número de productos de la lista.
     override fun getItemCount(): Int {
         return productos.size
+    }
+
+    // Actualiza la lista de alimentos mostrada en el RecyclerView.
+    fun actualizarLista(nuevaLista: List<Alimento>) {
+        productos = nuevaLista
+        notifyDataSetChanged()
     }
 }
