@@ -9,6 +9,10 @@ data class Alimento(
     val precio: Double,
     val tipo: String,
 
+    val latitud: Double? = null,
+    val longitud: Double? = null,
+    val fotoPath: String? = null,
+
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0
 )

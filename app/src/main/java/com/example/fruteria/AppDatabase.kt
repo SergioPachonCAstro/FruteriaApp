@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Alimento::class], version = 1)
+@Database(entities = [Alimento::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun alimentoDao(): AlimentoDAO
@@ -21,7 +21,9 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "fruteria_base_de_datos"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration(true)
+                    .build()
 
                 instancia = nueva
                 nueva

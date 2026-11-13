@@ -3,6 +3,7 @@ package com.example.fruteria
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import java.util.Locale
@@ -18,6 +19,8 @@ class ProductoAdapter(
         val nombre = vista.findViewById<TextView>(R.id.nombreFila)
         val precio = vista.findViewById<TextView>(R.id.precioFila)
         val tipo = vista.findViewById<TextView>(R.id.tipoFila)
+        val ubicacion = vista.findViewById<TextView>(R.id.ubicacionFila)
+        val ivFoto = vista.findViewById<ImageView>(R.id.ivFotoFila)
     }
 
     // Crea una fila a partir de su diseño XML.
@@ -48,6 +51,28 @@ class ProductoAdapter(
         )
 
         holder.tipo.text = producto.tipo
+
+        // Muestra la ubicación si existe
+        if (producto.latitud != null && producto.longitud != null) {
+            holder.ubicacion.text = String.format(
+                Locale.getDefault(),
+                "📍 %.4f, %.4f",
+                producto.latitud,
+                producto.longitud
+            )
+            holder.ubicacion.visibility = View.VISIBLE
+        } else {
+            holder.ubicacion.visibility = View.GONE
+        }
+
+        // Muestra la foto personalizada si existe
+        val bitmap = Fotos.cargar(producto.fotoPath)
+        if (bitmap != null) {
+            holder.ivFoto.setImageBitmap(bitmap)
+            holder.ivFoto.visibility = View.VISIBLE
+        } else {
+            holder.ivFoto.visibility = View.GONE
+        }
 
         // Pulsación larga para borrar el producto
         holder.itemView.setOnLongClickListener {

@@ -14,7 +14,7 @@
         android:textSize="28sp"
         android:textStyle="bold" />
 
-    <!-- Imagen según sea fruta o verdura -->
+    <!-- Imagen según sea fruta/verdura o la foto real capturada -->
     <ImageView
         android:id="@+id/imagenProducto"
         android:layout_width="180dp"
@@ -45,9 +45,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:layout_marginBottom="24dp"
         android:gravity="center"
         android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textoUbicacion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="24dp"
+        android:gravity="center"
+        android:textColor="#555555"
+        android:textSize="16sp"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/botonVolver"
