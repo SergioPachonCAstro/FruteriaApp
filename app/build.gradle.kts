@@ -57,5 +57,7 @@ dependencies {
     ksp("androidx.room:room-compiler:2.8.5")
     implementation("com.google.android.gms:play-services-location:21.3.0")
 
-
+    // Retrofit y Gson para consumir la API de Fruityvice
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
 }

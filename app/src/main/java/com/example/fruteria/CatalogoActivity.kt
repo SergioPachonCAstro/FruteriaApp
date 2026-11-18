@@ -28,26 +28,43 @@ class CatalogoActivity : ComponentActivity() {
         // Muestra los productos uno debajo de otro.
         listaProductos.layoutManager = LinearLayoutManager(this)
 
-        // Conecta el adaptador con la función para borrar un alimento individual al hacer clic largo.
-        adapter = ProductoAdapter(emptyList()) { alimento ->
-            AlertDialog.Builder(this)
-                .setTitle("Eliminar producto")
-                .setMessage("¿Quieres eliminar \"${alimento.nombre}\"?")
-                .setPositiveButton("Eliminar") { _, _ ->
-                    val dao = AppDatabase.obtener(this).alimentoDao()
-                    lifecycleScope.launch {
-                        dao.borrar(alimento)
-                        cargarProductos()
-                        Toast.makeText(
-                            this@CatalogoActivity,
-                            "Producto eliminado: ${alimento.nombre}",
-                            Toast.LENGTH_SHORT
-                        ).show()
+        // Conecta el adaptador con la función para borrar al hacer clic largo y ver detalles al hacer clic corto.
+        adapter = ProductoAdapter(
+            productos = emptyList(),
+            onLongClick = { alimento ->
+                AlertDialog.Builder(this)
+                    .setTitle("Eliminar producto")
+                    .setMessage("¿Quieres eliminar \"${alimento.nombre}\"?")
+                    .setPositiveButton("Eliminar") { _, _ ->
+                        val dao = AppDatabase.obtener(this).alimentoDao()
+                        lifecycleScope.launch {
+                            dao.borrar(alimento)
+                            cargarProductos()
+                            Toast.makeText(
+                                this@CatalogoActivity,
+                                "Producto eliminado: ${alimento.nombre}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
+            },
+            onClick = { alimento ->
+                val intent = android.content.Intent(this, DetalleActivity::class.java)
+                intent.putExtra("NOMBRE_EXTRA", alimento.nombre)
+                intent.putExtra("PRECIO_EXTRA", alimento.precio)
+                intent.putExtra("TIPO_EXTRA", alimento.tipo)
+                if (alimento.fotoPath != null) {
+                    intent.putExtra("FOTO_EXTRA", alimento.fotoPath)
                 }
-                .setNegativeButton("Cancelar", null)
-                .show()
-        }
+                if (alimento.latitud != null && alimento.longitud != null) {
+                    intent.putExtra("LATITUD_EXTRA", alimento.latitud)
+                    intent.putExtra("LONGITUD_EXTRA", alimento.longitud)
+                }
+                startActivity(intent)
+            }
+        )
         listaProductos.adapter = adapter
 
         // Botón para vaciar todo el catálogo.

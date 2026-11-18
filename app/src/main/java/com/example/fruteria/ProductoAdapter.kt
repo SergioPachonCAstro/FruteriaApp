@@ -10,7 +10,8 @@ import java.util.Locale
 
 class ProductoAdapter(
     private var productos: List<Alimento>,
-    private val onLongClick: (Alimento) -> Unit
+    private val onLongClick: (Alimento) -> Unit,
+    private val onClick: ((Alimento) -> Unit)? = null
 ) : RecyclerView.Adapter<ProductoAdapter.ViewHolder>() {
 
     // Guarda los elementos del diseño de cada fila.
@@ -72,6 +73,11 @@ class ProductoAdapter(
             holder.ivFoto.visibility = View.VISIBLE
         } else {
             holder.ivFoto.visibility = View.GONE
+        }
+
+        // Pulsación corta para ver la información nutricional y detalles del producto
+        holder.itemView.setOnClickListener {
+            onClick?.invoke(producto)
         }
 
         // Pulsación larga para borrar el producto

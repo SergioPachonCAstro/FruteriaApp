@@ -6,6 +6,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.ComponentActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 class DetalleActivity : ComponentActivity() {
@@ -19,10 +21,11 @@ class DetalleActivity : ComponentActivity() {
         val textoPrecio = findViewById<TextView>(R.id.textoPrecio)
         val textoTipo = findViewById<TextView>(R.id.textoTipo)
         val textoUbicacion = findViewById<TextView>(R.id.textoUbicacion)
+        val textoNutricional = findViewById<TextView>(R.id.textoNutricional)
         val botonVolver = findViewById<Button>(R.id.botonVolver)
         val imagenProducto = findViewById<ImageView>(R.id.imagenProducto)
 
-        // Recibimos los datos enviados desde la pantalla principal.
+        // Recibimos los datos enviados desde la pantalla principal o el catálogo.
         val nombre = intent.getStringExtra("NOMBRE_EXTRA") ?: ""
         val precio = intent.getDoubleExtra("PRECIO_EXTRA", 0.0)
         val tipo = intent.getStringExtra("TIPO_EXTRA") ?: ""
@@ -65,9 +68,33 @@ class DetalleActivity : ComponentActivity() {
             textoUbicacion.visibility = View.GONE
         }
 
+        // Consultar información nutricional en la API de Fruityvice
+        consultarInformacionNutricional(nombre, textoNutricional)
+
         // Cerramos esta pantalla para regresar a la anterior.
         botonVolver.setOnClickListener {
             finish()
+        }
+    }
+
+    private fun consultarInformacionNutricional(nombre: String, textoNutricional: TextView) {
+        textoNutricional.text = "Consultando API Fruityvice..."
+
+        lifecycleScope.launch {
+            val fruta = FruityviceRepository.buscarFruta(nombre)
+            if (fruta != null && fruta.nutritions != null) {
+                val n = fruta.nutritions
+                textoNutricional.text = """
+                    Fruta (API): ${fruta.name ?: nombre}
+                    • Calorías: ${n.calories ?: 0.0} kcal
+                    • Azúcares: ${n.sugar ?: 0.0} g
+                    • Proteínas: ${n.protein ?: 0.0} g
+                    • Grasas: ${n.fat ?: 0.0} g
+                    • Carbohidratos: ${n.carbohydrates ?: 0.0} g
+                """.trimIndent()
+            } else {
+                textoNutricional.text = "Fruta no disponible en la API de Fruityvice."
+            }
         }
     }
 }
