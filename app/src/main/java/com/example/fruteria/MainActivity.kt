@@ -9,12 +9,12 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -64,22 +64,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    // (3) Lanzador para elegir una foto de la Galería
-    private val elegirDeGaleria = registerForActivityResult(
-        ActivityResultContracts.PickVisualMedia()
-    ) { uri ->
-        if (uri != null) {
-            val ruta = Fotos.copiarDesdeUri(this, uri)
-            if (ruta != null) {
-                fotoPath = ruta
-                val bitmap = Fotos.cargar(ruta)
-                ivFoto.setImageBitmap(bitmap)
-                ivFoto.visibility = View.VISIBLE
-            }
-        }
-    }
-
-    // (4) Lanzador para pedir permisos de Ubicación GPS
+    // (3) Lanzador para pedir permisos de Ubicación GPS
     private val pedirPermisosUbicacion = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { resultado ->
@@ -106,16 +91,14 @@ class MainActivity : ComponentActivity() {
         val botonAnadir = findViewById<Button>(R.id.botonAnadir)
         val botonCatalogo = findViewById<Button>(R.id.botonCatalogo)
 
-        val botonCamara: Button = findViewById(R.id.botonCamara)
-        val botonGaleria: Button = findViewById(R.id.botonGaleria)
-        val botonUbicacion: Button = findViewById(R.id.botonUbicacion)
+        val botonCamara: ImageButton = findViewById(R.id.botonCamara)
+        val botonUbicacion: ImageButton = findViewById(R.id.botonUbicacion)
 
         ivFoto = findViewById(R.id.ivFoto)
         textoUbicacion = findViewById(R.id.textoUbicacion)
 
         // Listeners para los botones de fotos y GPS
         botonCamara.setOnClickListener { pulsarBotonFoto() }
-        botonGaleria.setOnClickListener { pulsarBotonGaleria() }
         botonUbicacion.setOnClickListener { pulsarBotonUbicacion() }
 
         // Abre la pantalla con los productos guardados.
@@ -227,12 +210,6 @@ class MainActivity : ComponentActivity() {
         val archivo = Fotos.crearArchivo(this)
         archivoFotoActual = archivo
         hacerFoto.launch(Fotos.uriDe(this, archivo))
-    }
-
-    private fun pulsarBotonGaleria() {
-        elegirDeGaleria.launch(
-            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-        )
     }
 
     private fun tienePermisoUbicacion(): Boolean {

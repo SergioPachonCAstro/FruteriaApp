@@ -29,6 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
+            android:gravity="center"
             android:hint="Nombre del producto"
             android:inputType="textCapSentences" />
 
@@ -38,21 +39,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
+            android:gravity="center"
             android:hint="Precio por kilo (€)"
             android:inputType="numberDecimal" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:text="Selecciona el tipo de producto"
             android:textSize="14sp" />
 
         <!-- Permite seleccionar fruta o verdura -->
         <RadioGroup
             android:id="@+id/grupoTipo"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginBottom="16dp"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <RadioButton
@@ -70,86 +75,65 @@
 
         </RadioGroup>
 
-        <!-- Botones de Foto (Cámara y Galería) ajustados -->
+        <!-- Botones de Acción (Cámara y GPS) con iconos al lado -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="12dp">
 
-            <Button
+            <ImageButton
                 android:id="@+id/botonCamara"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="6dp"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:text="Cámara"
-                android:textColor="#1B4332"
-                android:textStyle="bold"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginEnd="16dp"
+                android:padding="12dp"
+                android:src="@drawable/ic_camera"
+                android:contentDescription="Hacer foto con cámara"
+                android:scaleType="centerInside"
                 android:background="@drawable/boton_verde_pastel"
                 android:backgroundTint="@null" />
 
-            <Button
-                android:id="@+id/botonGaleria"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:text="Galería"
-                android:textColor="#1B4332"
-                android:textStyle="bold"
+            <ImageButton
+                android:id="@+id/botonUbicacion"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="16dp"
+                android:padding="12dp"
+                android:src="@drawable/ic_location"
+                android:contentDescription="Obtener ubicación GPS"
+                android:scaleType="centerInside"
                 android:background="@drawable/boton_verde_pastel"
                 android:backgroundTint="@null" />
+
         </LinearLayout>
 
-        <!-- Vista previa de la foto seleccionada -->
+        <!-- Vista previa de la foto seleccionada (debajo de los iconos) -->
         <ImageView
             android:id="@+id/ivFoto"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginBottom="8dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginBottom="12dp"
             android:visibility="gone"
             android:scaleType="centerCrop" />
 
-        <!-- Botón de ubicación GPS ajustado -->
-        <Button
-            android:id="@+id/botonUbicacion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
-            android:text="Obtener Ubicación GPS"
-            android:textColor="#1B4332"
-            android:textStyle="bold"
-            android:background="@drawable/boton_verde_pastel"
-            android:backgroundTint="@null" />
-
+        <!-- Ubicación GPS estilizada -->
         <TextView
             android:id="@+id/textoUbicacion"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
             android:layout_marginBottom="16dp"
             android:gravity="center"
             android:text="Sin ubicación"
-            android:textColor="#285238"
-            android:textSize="14sp" />
+            android:textColor="#1B4332"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:background="@drawable/cuadro_verde_pastel"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp" />
 
         <!-- Botón Añadir producto ajustado -->
         <Button
