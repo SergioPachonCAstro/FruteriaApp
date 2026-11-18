@@ -21,6 +21,7 @@ class DetalleActivity : ComponentActivity() {
         val textoPrecio = findViewById<TextView>(R.id.textoPrecio)
         val textoTipo = findViewById<TextView>(R.id.textoTipo)
         val textoUbicacion = findViewById<TextView>(R.id.textoUbicacion)
+        val tituloNutricional = findViewById<TextView>(R.id.tituloNutricional)
         val textoNutricional = findViewById<TextView>(R.id.textoNutricional)
         val botonVolver = findViewById<Button>(R.id.botonVolver)
         val imagenProducto = findViewById<ImageView>(R.id.imagenProducto)
@@ -68,8 +69,14 @@ class DetalleActivity : ComponentActivity() {
             textoUbicacion.visibility = View.GONE
         }
 
-        // Consultar información nutricional en la API de Fruityvice
-        consultarInformacionNutricional(nombre, textoNutricional)
+        // Consultar información nutricional según el tipo de producto
+        if (tipo.equals("Verdura", ignoreCase = true)) {
+            tituloNutricional.text = "Valores Nutricionales (CalorTracker)"
+            consultarInformacionNutricionalVerdura(nombre, textoNutricional)
+        } else {
+            tituloNutricional.text = "Valores Nutricionales (Fruityvice)"
+            consultarInformacionNutricional(nombre, textoNutricional)
+        }
 
         // Cerramos esta pantalla para regresar a la anterior.
         botonVolver.setOnClickListener {
@@ -94,6 +101,29 @@ class DetalleActivity : ComponentActivity() {
                 """.trimIndent()
             } else {
                 textoNutricional.text = "Fruta no disponible en la API de Fruityvice."
+            }
+        }
+    }
+
+    private fun consultarInformacionNutricionalVerdura(nombre: String, textoNutricional: TextView) {
+        textoNutricional.text = "Consultando API CalorTracker..."
+
+        lifecycleScope.launch {
+            val result = CalorTrackerRepository.buscarVerdura(nombre)
+            if (result != null) {
+                val n = result.per100g
+                textoNutricional.text = """
+                    Verdura (API): ${result.nombreEspanol}
+                    • Calorías: ${n.energyKcal ?: 0.0} kcal
+                    • Azúcares: ${n.sugarsG ?: 0.0} g
+                    • Proteínas: ${n.proteinG ?: 0.0} g
+                    • Grasas: ${n.fatG ?: 0.0} g
+                    • Carbohidratos: ${n.carbsG ?: 0.0} g
+
+                    ${result.atribucion}
+                """.trimIndent()
+            } else {
+                textoNutricional.text = "Verdura no disponible en la API de CalorTracker."
             }
         }
     }
